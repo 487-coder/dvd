@@ -53,7 +53,7 @@ class VideoSequenceDataset(Dataset):
         """
         super().__init__()
         video_paths = sorted(Path(file_root).glob("*.mp4"))
-        assert video_paths, f"No .train_data videos found in {file_root}"
+        assert video_paths, f"No .mp4 videos found in {file_root}"
         self.video_paths = video_paths
 
         # 预加载所有视频帧到内存
