@@ -52,7 +52,7 @@ class VideoSequenceDataset(Dataset):
             temp_stride:      时间间隔（<0 表示等于 sequence_length）
         """
         super().__init__()
-        video_paths = sorted(Path(file_root).glob("*.train_data"))
+        video_paths = sorted(Path(file_root).glob("*.mp4"))
         assert video_paths, f"No .train_data videos found in {file_root}"
         self.video_paths = video_paths
 
