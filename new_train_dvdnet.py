@@ -3,11 +3,12 @@ import torch.nn as nn
 import torch
 import torch.optim as optim
 from torch.utils.data import DataLoader
-from models import DVDNet
+from models import DVDNet, Spatial_block,Temporal_block
 from new_dataset import ValDataset, VideoSequenceDataset
 from new_utils import orthogonal_conv_weights, close_logger, init_logging, normalize_augment
 from new_train_common import resume_training, lr_scheduler, log_train_psnr, \
     validate_and_log, save_model_checkpoint
+
 
 
 def main(**kwargs):
@@ -35,7 +36,7 @@ def main(**kwargs):
     torch.backends.cudnn.benchmark = True  # CUDNN optimization
 
     # Create model
-    model = DVDNet()
+    model = DVDNet(spatial_model=Spatial_block(), temporal_model=Temporal_block(num_input_frames=kwargs['temp_patch_size']))
     model = nn.DataParallel(model, device_ids=device_ids).cuda()
 
     # Define loss
@@ -84,7 +85,7 @@ def main(**kwargs):
             noise = torch.normal(mean=noise, std=stdn.expand_as(noise))
             imgn_train = img_train + noise
 
-            noise_map = stdn.expand((N, 1, H, W)).cuda(non_blocking=True)
+            noise_map = stdn.expand((N, 3, H, W)).cuda(non_blocking=True)
 
             # 7) 前向 + 反向
             out_train = model(imgn_train, noise_map)

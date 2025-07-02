@@ -77,6 +77,8 @@ def warp(image1, flow):
 
 def align_image(image1, central_image):
     # image: [B,C,H,W]
+    image1 = torch.clamp(image1, 0.0, 1.0)
+    central_image = torch.clamp(central_image, 0.0, 1.0)
     image1_np = to_cv2_image(image1)           # RGB, uint8
     central_image_np = to_cv2_image(central_image)
 
